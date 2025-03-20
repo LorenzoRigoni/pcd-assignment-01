@@ -11,6 +11,6 @@ public class Costants {
     public static final double PERCEPTION_RADIUS = 50.0;
     public static final double AVOID_RADIUS = 20.0;
 
-    public final static int SCREEN_WIDTH = 800;
+    public final static int SCREEN_WIDTH = 1000;
     public final static int SCREEN_HEIGHT = 800;
 }
