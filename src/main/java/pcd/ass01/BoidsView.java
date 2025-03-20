@@ -5,15 +5,19 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 public class BoidsView implements ChangeListener {
 
-	private JFrame frame;
-	private BoidsPanel boidsPanel;
-	private JSlider cohesionSlider, separationSlider, alignmentSlider;
-	private BoidsModel model;
-	private int width, height;
+	private final JFrame frame;
+	private final BoidsPanel boidsPanel;
+	private final JSlider cohesionSlider, separationSlider, alignmentSlider;
+	private final BoidsModel model;
+	private final JButton startButton, stopButton;
+	private final int width, height;
+	private boolean isStopped;
 	
 	public BoidsView(BoidsModel model, int width, int height) {
 		this.model = model;
@@ -36,7 +40,23 @@ public class BoidsView implements ChangeListener {
         cohesionSlider = makeSlider();
         separationSlider = makeSlider();
         alignmentSlider = makeSlider();
-        
+
+		this.startButton = new JButton("Start");
+		this.stopButton = new JButton("Stop");
+		this.isStopped = false;
+
+		this.startButton.addActionListener(e -> {
+            if(isStopped)
+				this.isStopped = false;
+        });
+
+		this.stopButton.addActionListener(e -> {
+			if (!isStopped)
+				this.isStopped = true;
+		});
+
+		slidersPanel.add(this.startButton);
+		slidersPanel.add(this.stopButton);
         slidersPanel.add(new JLabel("Separation"));
         slidersPanel.add(separationSlider);
         slidersPanel.add(new JLabel("Alignment"));
@@ -80,7 +100,7 @@ public class BoidsView implements ChangeListener {
 		} else if (e.getSource() == cohesionSlider) {
 			var val = cohesionSlider.getValue();
 			model.setCohesionWeight(0.1*val);
-		} else {
+		} else if (e.getSource() == alignmentSlider) {
 			var val = alignmentSlider.getValue();
 			model.setAlignmentWeight(0.1*val);
 		}
@@ -93,5 +113,4 @@ public class BoidsView implements ChangeListener {
 	public int getHeight() {
 		return height;
 	}
-
 }

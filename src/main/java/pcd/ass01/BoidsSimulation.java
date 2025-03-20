@@ -1,26 +1,21 @@
 package pcd.ass01;
 
+import javax.swing.*;
+
+import static pcd.ass01.utilities.Costants.*;
+
 public class BoidsSimulation {
 
-	final static int N_BOIDS = 1500;
+    public static void main(String[] args) {
+		String numberOfBoids = "";
 
-	final static double SEPARATION_WEIGHT = 1.0;
-    final static double ALIGNMENT_WEIGHT = 1.0;
-    final static double COHESION_WEIGHT = 1.0;
+		do {
+			numberOfBoids = JOptionPane.showInputDialog("Enter the number of boids (it must be a positive integer):",
+					JOptionPane.QUESTION_MESSAGE);
+		} while (numberOfBoids.isEmpty() || Integer.parseInt(numberOfBoids) <= 0);
 
-    final static int ENVIRONMENT_WIDTH = 1000; 
-	final static int ENVIRONMENT_HEIGHT = 1000;
-    static final double MAX_SPEED = 4.0;
-    static final double PERCEPTION_RADIUS = 50.0;
-    static final double AVOID_RADIUS = 20.0;
-
-	final static int SCREEN_WIDTH = 800; 
-	final static int SCREEN_HEIGHT = 800; 
-	
-
-    public static void main(String[] args) {      
     	var model = new BoidsModel(
-    					N_BOIDS, 
+    					Integer.parseInt(numberOfBoids),
     					SEPARATION_WEIGHT, ALIGNMENT_WEIGHT, COHESION_WEIGHT, 
     					ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT,
     					MAX_SPEED,
