@@ -44,7 +44,7 @@ public class BoidsModel {
     }
     
     public synchronized List<Boid> getBoids(){
-    	return new ArrayList<>(boids);
+    	return boids;
     }
     
     public synchronized double getMinX() {

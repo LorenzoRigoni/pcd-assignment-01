@@ -7,7 +7,7 @@ import static pcd.ass01.utilities.Costants.*;
 public class BoidsSimulation {
 
     public static void main(String[] args) {
-		String numberOfBoids = "";
+		String numberOfBoids;
 
 		do {
 			numberOfBoids = JOptionPane.showInputDialog("Enter the number of boids (it must be a positive integer):",
