@@ -15,12 +15,13 @@ public class BoidsView implements ChangeListener {
 	private final BoidsPanel boidsPanel;
 	private final JSlider cohesionSlider, separationSlider, alignmentSlider;
 	private final BoidsModel model;
+	private final BoidsSimulator simulator;
 	private final JButton startButton, stopButton;
 	private final int width, height;
-	private boolean isStopped;
 	
-	public BoidsView(BoidsModel model, int width, int height) {
+	public BoidsView(BoidsModel model, BoidsSimulator simulator, int width, int height) {
 		this.model = model;
+		this.simulator = simulator;
 		this.width = width;
 		this.height = height;
 		
@@ -43,16 +44,13 @@ public class BoidsView implements ChangeListener {
 
 		this.startButton = new JButton("Start");
 		this.stopButton = new JButton("Stop");
-		this.isStopped = false;
 
 		this.startButton.addActionListener(e -> {
-            if(isStopped)
-				this.isStopped = false;
+			this.simulator.startSimulation();
         });
 
 		this.stopButton.addActionListener(e -> {
-			if (!isStopped)
-				this.isStopped = true;
+			this.simulator.stopSimulation();
 		});
 
 		slidersPanel.add(this.startButton);
