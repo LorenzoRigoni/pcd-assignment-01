@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+/**
+ * This class represents the thread that manage a subset of boids.
+ * It performs the update of velocities and positions of the boids.
+ */
 public class BoidWorker extends Thread {
     private final List<Boid> boids;
     private final BoidsModel model;
