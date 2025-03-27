@@ -16,7 +16,7 @@ public class BoidsView implements ChangeListener {
 	private final JSlider cohesionSlider, separationSlider, alignmentSlider;
 	private final BoidsModel model;
 	private final BoidsSimulator simulator;
-	private final JButton startButton, stopButton;
+	private final JButton suspendResumeButton, stopButton;
 	private final int width, height;
 	
 	public BoidsView(BoidsModel model, BoidsSimulator simulator, int width, int height) {
@@ -41,19 +41,25 @@ public class BoidsView implements ChangeListener {
         cohesionSlider = makeSlider();
         separationSlider = makeSlider();
         alignmentSlider = makeSlider();
-
-		this.startButton = new JButton("Start");
+		this.suspendResumeButton = new JButton("Suspend");
 		this.stopButton = new JButton("Stop");
 
-		this.startButton.addActionListener(e -> {
-			this.simulator.startSimulation();
-        });
-
-		this.stopButton.addActionListener(e -> {
-			this.simulator.stopSimulation();
+		this.suspendResumeButton.addActionListener(e -> {
+			if(this.simulator.isRunning()) {
+				this.simulator.suspendSimulation();
+				this.suspendResumeButton.setText("Resume");
+			} else {
+				this.simulator.resumeSimulation();
+				this.suspendResumeButton.setText("Suspend");
+			}
 		});
 
-		slidersPanel.add(this.startButton);
+		this.stopButton.addActionListener(e -> {
+			frame.dispose();
+			System.exit(0);
+		});
+
+		slidersPanel.add(this.suspendResumeButton);
 		slidersPanel.add(this.stopButton);
         slidersPanel.add(new JLabel("Separation"));
         slidersPanel.add(separationSlider);

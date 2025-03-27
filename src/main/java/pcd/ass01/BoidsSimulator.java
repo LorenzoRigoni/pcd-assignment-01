@@ -50,12 +50,16 @@ public class BoidsSimulator {
     	this.view = Optional.of(view);
     }
 
-    public void startSimulation() {
+    public boolean isRunning() {
+        return this.simulationState.isRunning();
+    }
+
+    public void resumeSimulation() {
         this.simulationState.resumeSimulation();
     }
 
-    public void stopSimulation() {
-        this.simulationState.pauseSimulation();
+    public void suspendSimulation() {
+        this.simulationState.suspendSimulation();
     }
       
     public void runSimulation() {

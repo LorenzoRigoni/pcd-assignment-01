@@ -7,7 +7,11 @@ public class SimulationState {
         this.isRunning = isRunning;
     }
 
-    public synchronized void pauseSimulation() {
+    public synchronized boolean isRunning() {
+        return this.isRunning;
+    }
+
+    public synchronized void suspendSimulation() {
         this.isRunning = false;
     }
 
