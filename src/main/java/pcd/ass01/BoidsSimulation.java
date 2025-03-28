@@ -1,5 +1,7 @@
 package pcd.ass01;
 
+import pcd.ass01.multithreading.MultithreadingBoidsSimulator;
+
 import javax.swing.*;
 
 import static pcd.ass01.utilities.Costants.*;
@@ -21,7 +23,7 @@ public class BoidsSimulation {
     					MAX_SPEED,
     					PERCEPTION_RADIUS,
     					AVOID_RADIUS); 
-    	var sim = new BoidsSimulator(model);
+    	var sim = new MultithreadingBoidsSimulator(model);
     	var view = new BoidsView(model, sim, SCREEN_WIDTH, SCREEN_HEIGHT);
     	sim.attachView(view);
     	sim.runSimulation();
