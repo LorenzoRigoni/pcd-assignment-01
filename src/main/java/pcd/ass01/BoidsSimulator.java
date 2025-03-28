@@ -2,22 +2,33 @@ package pcd.ass01;
 
 import java.util.Optional;
 
-public class BoidsSimulator {
-    protected Optional<BoidsView> view;
+public interface BoidsSimulator {
+    /**
+     * Attaches the view to the simulator.
+     *
+     * @param view The view to attach
+     */
+    void attachView(BoidsView view);
 
-    public BoidsSimulator() {
-        this.view = Optional.empty();
-    }
+    /**
+     * Checks if the simulator is running.
+     *
+     * @return true if it is running, false otherwise
+     */
+    boolean isRunning();
 
-    public void attachView(BoidsView view) {
-        this.view = Optional.of(view);
-    }
+    /**
+     * Resumes the simulation.
+     */
+    void resumeSimulation();
 
-    public boolean isRunning() {
-        return true;
-    }
+    /**
+     * Suspends the simulation.
+     */
+    void suspendSimulation();
 
-    public void resumeSimulation() {}
-
-    public void suspendSimulation() {}
+    /**
+     * Runs the simulation.
+     */
+    void runSimulation();
 }

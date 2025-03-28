@@ -14,11 +14,11 @@ import java.util.concurrent.CyclicBarrier;
 public class BoidWorker extends Thread {
     private final List<Boid> boids;
     private final BoidsModel model;
-    private final CyclicBarrier barrier;
+    private final UpdateBarrier barrier;
     private final SimulationState simulationState;
     private final WorkersCoordinator workersCoordinator;
 
-    public BoidWorker(List<Boid> boids, BoidsModel model, CyclicBarrier barrier, SimulationState simulationState, WorkersCoordinator workersCoordinator) {
+    public BoidWorker(List<Boid> boids, BoidsModel model, UpdateBarrier barrier, SimulationState simulationState, WorkersCoordinator workersCoordinator) {
         this.boids = boids;
         this.model = model;
         this.barrier = barrier;
@@ -31,15 +31,13 @@ public class BoidWorker extends Thread {
         while(true) {
             this.simulationState.waitForSimulation();
 
-            for (Boid boid : boids) {
+            for (Boid boid : this.boids) {
                 boid.updateVelocity(model);
             }
 
-            try {
-                barrier.await(); //Wait all the boids to update their velocities
-            } catch (InterruptedException | BrokenBarrierException e) {}
+            this.barrier.waitBarrier(); //Wait all the boids to update their velocities
 
-            for (Boid boid : boids) {
+            for (Boid boid : this.boids) {
                 boid.updatePos(model);
             }
 

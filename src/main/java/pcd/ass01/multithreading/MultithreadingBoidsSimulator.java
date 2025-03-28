@@ -10,26 +10,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CyclicBarrier;
 
-public class MultithreadingBoidsSimulator extends BoidsSimulator {
+public class MultithreadingBoidsSimulator implements BoidsSimulator {
     private BoidsModel model;
+    private Optional<BoidsView> view;
     private final List<BoidWorker> workers;
-    private final CyclicBarrier barrier;
+    private final UpdateBarrier barrier;
     private final SimulationState simulationState;
     private final WorkersCoordinator coordinator;
-
     private static final int FRAMERATE = 25;
     private int framerate;
 
     public MultithreadingBoidsSimulator(BoidsModel model) {
-        super();
         this.model = model;
+        this.view = Optional.empty();
         this.workers = new ArrayList<>();
 
         final int numThreads = Runtime.getRuntime().availableProcessors() + 1;
         final List<Boid> boids = this.model.getBoids();
         final int boidsPerWorker = boids.size() / numThreads;
 
-        this.barrier = new CyclicBarrier(numThreads);
+        this.barrier = new UpdateBarrier(numThreads);
         this.simulationState = new SimulationState(true);
         this.coordinator = new WorkersCoordinator(numThreads);
 
@@ -43,6 +43,11 @@ public class MultithreadingBoidsSimulator extends BoidsSimulator {
             this.workers.add(new BoidWorker(subList, model, this.barrier, this.simulationState, this.coordinator));
             this.workers.get(i).start();
         }
+    }
+
+    @Override
+    public void attachView(BoidsView view) {
+        this.view = Optional.of(view);
     }
 
     @Override
@@ -60,6 +65,7 @@ public class MultithreadingBoidsSimulator extends BoidsSimulator {
         this.simulationState.suspendSimulation();
     }
 
+    @Override
     public void runSimulation() {
         while (true) {
             this.simulationState.waitForSimulation();
