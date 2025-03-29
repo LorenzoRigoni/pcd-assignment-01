@@ -20,6 +20,25 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
         this.simulationState = new SimulationState(true);
         this.coordinator = new WorkersCoordinator(model.getBoids().size());
         this.barrier = new UpdateBarrier(model.getBoids().size());
+
+        //Creates a virtual thread for each boid
+        model.getBoids().forEach(boid -> {
+            Thread.ofVirtual().start(() -> {
+                while (true) {
+                    simulationState.waitForSimulation();
+
+                    boid.updateVelocity(model);
+                    System.out.println("Velocità aggiornata per il boid: " + boid);
+
+                    this.barrier.waitBarrier();
+
+                    boid.updatePos(model);
+                    System.out.println("Posizione aggiornata per il boid: " + boid);
+                    coordinator.workerDone();
+
+                }
+            });
+        });
     }
 
     @Override
@@ -43,28 +62,6 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
     }
 
     public void runSimulation() {
-
-        //Creates a virtual thread for each boid
-        model.getBoids().forEach(boid -> {
-            Thread.ofVirtual().start(() -> {
-                while (true) {
-                    simulationState.waitForSimulation();
-
-                    boid.updateVelocity(model);
-                    System.out.println("Velocità aggiornata per il boid: " + boid);
-                    coordinator.workerDone();
-
-                    this.barrier.waitBarrier();
-
-                    boid.updatePos(model);
-                    System.out.println("Posizione aggiornata per il boid: " + boid);
-                    coordinator.workerDone();
-
-                    this.barrier.waitBarrier();
-                }
-            });
-        });
-
         while (true) {
             simulationState.waitForSimulation();
             var t0 = System.currentTimeMillis();

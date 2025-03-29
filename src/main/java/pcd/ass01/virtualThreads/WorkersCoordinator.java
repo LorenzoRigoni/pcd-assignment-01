@@ -58,11 +58,9 @@ public class WorkersCoordinator {
     public void coordinatorDone() {
         lock.lock();
         try{
-            if (this.countWorkersFinished == this.numWorkers) {
-                System.out.println("Il coordinatore sta azzerando il contatore.");
-                this.countWorkersFinished = 0;  // Azzera solo dopo che tutti i worker hanno completato.
-                condition.signalAll();  // Segnala tutti i thread che possono ripartire.
-            }
+            System.out.println("Il coordinatore sta azzerando il contatore.");
+            this.countWorkersFinished = 0;
+            condition.signalAll();
         } finally {
             lock.unlock();
         }

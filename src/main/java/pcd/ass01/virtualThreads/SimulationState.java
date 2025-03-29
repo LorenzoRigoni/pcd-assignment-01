@@ -14,13 +14,7 @@ public class SimulationState {
     private final Condition condition = lock.newCondition();
 
     public SimulationState(boolean isRunning) {
-        lock.lock();
-        try{
-            this.isRunning = isRunning;
-        } finally {
-            lock.unlock();
-        }
-
+        this.isRunning = isRunning;
     }
 
     /**
