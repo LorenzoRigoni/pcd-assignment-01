@@ -1,6 +1,7 @@
 package pcd.ass01;
 
 import pcd.ass01.multithreading.MultithreadingBoidsSimulator;
+import pcd.ass01.virtualThreads.VirtualThreadBoidsSimulator;
 
 import javax.swing.*;
 
@@ -24,6 +25,7 @@ public class BoidsSimulation {
     					PERCEPTION_RADIUS,
     					AVOID_RADIUS); 
     	var sim = new MultithreadingBoidsSimulator(model);
+		//var sim = new VirtualThreadBoidsSimulator(model);
     	var view = new BoidsView(model, sim, SCREEN_WIDTH, SCREEN_HEIGHT);
     	sim.attachView(view);
     	sim.runSimulation();
