@@ -28,12 +28,12 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
                     simulationState.waitForSimulation();
 
                     boid.updateVelocity(model);
-                    System.out.println("Velocità aggiornata per il boid: " + boid);
+                    //System.out.println("Velocità aggiornata per il boid: " + boid);
 
                     this.barrier.waitBarrier();
 
                     boid.updatePos(model);
-                    System.out.println("Posizione aggiornata per il boid: " + boid);
+                    //System.out.println("Posizione aggiornata per il boid: " + boid);
                     coordinator.workerDone();
 
                 }
@@ -72,6 +72,7 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
                 v.update(framerate);
                 var t1 = System.currentTimeMillis();
                 var dtElapsed = t1 - t0;
+                System.out.println(dtElapsed);
                 var framePeriod = 1000 / FRAMERATE;
 
                 if (dtElapsed < framePeriod) {

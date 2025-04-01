@@ -108,6 +108,7 @@ public class TaskBoidsSimulator implements BoidsSimulator {
                     view.get().update(framerate);
                     long t1 = System.currentTimeMillis();
                     long dtElapsed = t1 - t0;
+                    System.out.println(dtElapsed);
                     long frameratePeriod = 1000/FRAMERATE;
 
                     if (dtElapsed < frameratePeriod) {

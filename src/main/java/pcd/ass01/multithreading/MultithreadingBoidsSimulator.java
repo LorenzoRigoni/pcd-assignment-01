@@ -76,6 +76,7 @@ public class MultithreadingBoidsSimulator implements BoidsSimulator {
                 view.get().update(framerate);
                 var t1 = System.currentTimeMillis();
                 var dtElapsed = t1 - t0;
+                System.out.println(dtElapsed);
                 var framratePeriod = 1000/FRAMERATE;
 
                 if (dtElapsed < framratePeriod) {

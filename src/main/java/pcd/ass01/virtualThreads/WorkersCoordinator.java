@@ -23,7 +23,7 @@ public class WorkersCoordinator {
         lock.lock();
         try {
             this.countWorkersFinished++;
-            System.out.println("Worker finito. Count = " + this.countWorkersFinished);
+            //System.out.println("Worker finito. Count = " + this.countWorkersFinished);
             if (this.countWorkersFinished == this.numWorkers)
                 condition.signalAll();
 
@@ -43,7 +43,7 @@ public class WorkersCoordinator {
         lock.lock();
         try {
             while(this.countWorkersFinished < this.numWorkers) {
-                System.out.println("Aspetto che tutti i workers abbiano finito. Count = " + this.countWorkersFinished);
+                //System.out.println("Aspetto che tutti i workers abbiano finito. Count = " + this.countWorkersFinished);
                condition.await();
             }
         } catch (InterruptedException e) {}
@@ -58,7 +58,7 @@ public class WorkersCoordinator {
     public void coordinatorDone() {
         lock.lock();
         try{
-            System.out.println("Il coordinatore sta azzerando il contatore.");
+            //System.out.println("Il coordinatore sta azzerando il contatore.");
             this.countWorkersFinished = 0;
             condition.signalAll();
         } finally {
