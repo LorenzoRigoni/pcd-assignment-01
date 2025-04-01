@@ -1,6 +1,5 @@
 package pcd.ass01;
 
-import java.util.Optional;
 
 public interface BoidsSimulator {
     /**

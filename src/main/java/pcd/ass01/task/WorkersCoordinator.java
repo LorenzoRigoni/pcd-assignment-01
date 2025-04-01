@@ -1,16 +1,14 @@
-// WorkersCoordinator.java
 package pcd.ass01.task;
 
 import java.util.concurrent.CountDownLatch;
 
-/**
- * This class coordinates the workers (tasks).
- */
 public class WorkersCoordinator {
-    private CountDownLatch updateLatch;
-    private CountDownLatch renderLatch;
+    private volatile CountDownLatch updateLatch;
+    private volatile CountDownLatch renderLatch;
+    private final int numThreads;
 
     public WorkersCoordinator(int numWorkers) {
+        this.numThreads = numWorkers;
         this.updateLatch = new CountDownLatch(numWorkers);
         this.renderLatch = new CountDownLatch(1);
     }
@@ -31,8 +29,11 @@ public class WorkersCoordinator {
         renderLatch.await();
     }
 
-    public void reset(int numWorkers) {
-        this.updateLatch = new CountDownLatch(numWorkers);
-        this.renderLatch = new CountDownLatch(1);
+    public synchronized void reset() {
+        // Only reset if all workers have completed
+        if (updateLatch.getCount() == 0) {
+            this.updateLatch = new CountDownLatch(numThreads);
+            this.renderLatch = new CountDownLatch(1);
+        }
     }
 }

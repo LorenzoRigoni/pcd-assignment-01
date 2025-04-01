@@ -7,21 +7,32 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This class manages the state of the simulation: running or suspended.
  */
 public class SimulationState {
-    private final AtomicBoolean isRunning;
+    private boolean isRunning;
 
     public SimulationState(boolean isRunning) {
-        this.isRunning = new AtomicBoolean(isRunning);
+        this.isRunning = isRunning;
     }
 
-    public boolean isRunning() {
-        return this.isRunning.get();
+    public synchronized boolean isRunning() {
+        return this.isRunning;
     }
 
-    public void suspendSimulation() {
-        this.isRunning.set(false);
+    public synchronized void suspendSimulation() {
+        this.isRunning=false;
     }
 
-    public void resumeSimulation() {
-        this.isRunning.set(true);
-    }
+    public synchronized void resumeSimulation() {
+        this.isRunning = true;
+        notifyAll();
+    }   
+    /**
+    * Stop all the threads until the simulation is suspended.
+    */
+   public synchronized void waitForSimulation() {
+       try {
+           while (!this.isRunning) {
+               wait();
+           }
+       } catch (InterruptedException e) {}
+   }
 }

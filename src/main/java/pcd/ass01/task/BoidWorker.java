@@ -3,51 +3,45 @@ package pcd.ass01.task;
 
 import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
-
 import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * This class represents the task that manages a subset of boids.
  */
-public class BoidWorker implements Callable<Void> {
+public class BoidWorker implements Runnable{
     private final List<Boid> boids;
     private final BoidsModel model;
-    private final SimulationState simulationState;
     private final WorkersCoordinator workersCoordinator;
-    private final boolean firstPhase;
+    private final SimulationState simulationState;
 
     public BoidWorker(List<Boid> boids, BoidsModel model, 
                      SimulationState simulationState, 
-                     WorkersCoordinator workersCoordinator,
-                     boolean firstPhase) {
+                     WorkersCoordinator workersCoordinator) {
         this.boids = boids;
         this.model = model;
-        this.simulationState = simulationState;
         this.workersCoordinator = workersCoordinator;
-        this.firstPhase = firstPhase;
+        this.simulationState = simulationState;
     }
 
     @Override
-    public Void call() throws Exception {
-        if (!simulationState.isRunning()) {
-            return null;
+    public void run() {
+        this.simulationState.waitForSimulation();
+        
+        for(Boid boid : this.boids) {
+            boid.updatePos(model);
         }
-
-        if (firstPhase) {
-            // Update velocities phase
-            for (Boid boid : this.boids) {
-                boid.updateVelocity(model);
-            }
-            workersCoordinator.workerDone();
-            workersCoordinator.waitForRender();
-        } else {
-            // Update positions phase
-            for (Boid boid : this.boids) {
-                boid.updatePos(model);
-            }
-            workersCoordinator.workerDone();
+        workersCoordinator.workerDone();
+        
+        try {
+            workersCoordinator.waitWorkers();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); 
+            return;
         }
-        return null;
+        
+        for(Boid boid : this.boids) {
+            boid.updateVelocity(model);
+        }
+        workersCoordinator.workerDone();
     }
 }
