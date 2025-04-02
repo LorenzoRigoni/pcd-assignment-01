@@ -11,25 +11,21 @@ import java.util.List;
 import java.util.Optional;
 
 public class MultithreadingBoidsSimulator implements BoidsSimulator {
-    private BoidsModel model;
     private Optional<BoidsView> view;
-    private final List<BoidWorker> workers;
-    private final UpdateBarrier barrier;
     private final SimulationState simulationState;
     private final WorkersCoordinator coordinator;
     private static final int FRAMERATE = 25;
     private int framerate;
 
     public MultithreadingBoidsSimulator(BoidsModel model) {
-        this.model = model;
         this.view = Optional.empty();
-        this.workers = new ArrayList<>();
+        List<BoidWorker> workers = new ArrayList<>();
 
         final int numThreads = Runtime.getRuntime().availableProcessors() + 1;
-        final List<Boid> boids = this.model.getBoids();
+        final List<Boid> boids = model.getBoids();
         final int boidsPerWorker = boids.size() / numThreads;
 
-        this.barrier = new UpdateBarrier(numThreads);
+        final UpdateBarrier barrier = new UpdateBarrier(numThreads);
         this.simulationState = new SimulationState(true);
         this.coordinator = new WorkersCoordinator(numThreads);
 
@@ -40,8 +36,8 @@ public class MultithreadingBoidsSimulator implements BoidsSimulator {
             start = i * boidsPerWorker;
             end = (i == numThreads - 1) ? boids.size() : start + boidsPerWorker;
             subList = boids.subList(start, end);
-            this.workers.add(new BoidWorker(subList, model, this.barrier, this.simulationState, this.coordinator));
-            this.workers.get(i).start();
+            workers.add(new BoidWorker(subList, model, barrier, this.simulationState, this.coordinator));
+            workers.get(i).start();
         }
     }
 

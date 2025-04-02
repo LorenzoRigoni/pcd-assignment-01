@@ -8,7 +8,6 @@ import pcd.ass01.common.SimulationState;
 import java.util.Optional;
 
 public class VirtualThreadBoidsSimulator implements BoidsSimulator {
-    private final BoidsModel model;
     private Optional<BoidsView> view = Optional.empty();
     private final SimulationState simulationState;
     private final WorkersCoordinator coordinator;
@@ -17,7 +16,6 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
     private int framerate;
 
     public VirtualThreadBoidsSimulator(BoidsModel model) {
-        this.model = model;
         this.simulationState = new SimulationState(true);
         this.coordinator = new WorkersCoordinator(model.getBoids().size());
         this.barrier = new UpdateBarrier(model.getBoids().size());
@@ -62,14 +60,15 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
         this.simulationState.suspendSimulation();
     }
 
+    @Override
     public void runSimulation() {
         while (true) {
-            simulationState.waitForSimulation();
+            this.simulationState.waitForSimulation();
             var t0 = System.currentTimeMillis();
 
-            coordinator.waitWorkers();
+            this.coordinator.waitWorkers();
 
-            view.ifPresent(v -> {
+            this.view.ifPresent(v -> {
                 v.update(framerate);
                 var t1 = System.currentTimeMillis();
                 var dtElapsed = t1 - t0;
@@ -85,7 +84,7 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
                     framerate = (int) (1000 / dtElapsed);
                 }
             });
-            coordinator.coordinatorDone();
+            this.coordinator.coordinatorDone();
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TaskBoidsSimulator implements BoidsSimulator {
-    private BoidsModel model;
+    private final BoidsModel model;
     private Optional<BoidsView> view;
     private final ExecutorService executor;
     private final SimulationState simulationState;

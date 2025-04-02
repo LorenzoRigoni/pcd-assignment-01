@@ -1,4 +1,3 @@
-// BoidWorker.java
 package pcd.ass01.task;
 
 import pcd.ass01.Boid;

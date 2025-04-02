@@ -3,6 +3,9 @@ package pcd.ass01.virtualThreads;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * This class manages the barrier for the threads.
+ */
 public class UpdateBarrier {
     private final int numWorkers;
     private int countWorkersAtBarrier;

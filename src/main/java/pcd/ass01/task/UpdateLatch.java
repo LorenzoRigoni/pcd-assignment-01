@@ -12,7 +12,10 @@ public class UpdateLatch {
         }
         this.count = count;
     }
-    
+
+    /**
+     * Stops the thread until the counter is greater than 0.
+     */
     public synchronized void await() {
         try {
             while (count > 0) {
@@ -23,6 +26,9 @@ public class UpdateLatch {
         }
     }
 
+    /**
+     * Decrements the counter and checks if the counter is equal to 0.
+     */
     public synchronized void countDown() {
         if (count > 0) {
             count--;
