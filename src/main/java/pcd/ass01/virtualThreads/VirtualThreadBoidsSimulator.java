@@ -1,22 +1,14 @@
 package pcd.ass01.virtualThreads;
 
+import pcd.ass01.AbstractBoidsSimulator;
 import pcd.ass01.BoidsModel;
-import pcd.ass01.BoidsSimulator;
-import pcd.ass01.BoidsView;
-import pcd.ass01.common.SimulationState;
 
-import java.util.Optional;
-
-public class VirtualThreadBoidsSimulator implements BoidsSimulator {
-    private Optional<BoidsView> view = Optional.empty();
-    private final SimulationState simulationState;
+public class VirtualThreadBoidsSimulator extends AbstractBoidsSimulator {
     private final WorkersCoordinator coordinator;
     private final UpdateBarrier barrier;
-    private static final int FRAMERATE = 25;
-    private int framerate;
 
     public VirtualThreadBoidsSimulator(BoidsModel model) {
-        this.simulationState = new SimulationState(true);
+        super();
         this.coordinator = new WorkersCoordinator(model.getBoids().size());
         this.barrier = new UpdateBarrier(model.getBoids().size());
 
@@ -41,26 +33,6 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
     }
 
     @Override
-    public void attachView(BoidsView view) {
-        this.view = Optional.of(view);
-    }
-
-    @Override
-    public boolean isRunning() {
-        return this.simulationState.isRunning();
-    }
-
-    @Override
-    public void resumeSimulation() {
-        this.simulationState.resumeSimulation();
-    }
-
-    @Override
-    public void suspendSimulation() {
-        this.simulationState.suspendSimulation();
-    }
-
-    @Override
     public void runSimulation() {
         while (true) {
             this.simulationState.waitForSimulation();
@@ -68,25 +40,9 @@ public class VirtualThreadBoidsSimulator implements BoidsSimulator {
 
             this.coordinator.waitWorkers();
 
-            this.view.ifPresent(v -> {
-                v.update(framerate);
-                var t1 = System.currentTimeMillis();
-                var dtElapsed = t1 - t0;
-                System.out.println(dtElapsed);
-                var framePeriod = 1000 / FRAMERATE;
+            this.updateView(t0);
 
-                if (dtElapsed < framePeriod) {
-                    try {
-                        Thread.sleep(framePeriod - dtElapsed);
-                    } catch (InterruptedException ignored) {}
-                    framerate = FRAMERATE;
-                } else {
-                    framerate = (int) (1000 / dtElapsed);
-                }
-            });
             this.coordinator.coordinatorDone();
         }
     }
-
 }
-
