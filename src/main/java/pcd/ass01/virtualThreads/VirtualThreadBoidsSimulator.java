@@ -3,6 +3,7 @@ package pcd.ass01.virtualThreads;
 import pcd.ass01.BoidsModel;
 import pcd.ass01.BoidsSimulator;
 import pcd.ass01.BoidsView;
+import pcd.ass01.common.SimulationState;
 
 import java.util.Optional;
 

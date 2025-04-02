@@ -4,11 +4,11 @@ import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
 import pcd.ass01.BoidsSimulator;
 import pcd.ass01.BoidsView;
+import pcd.ass01.common.SimulationState;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CyclicBarrier;
 
 public class MultithreadingBoidsSimulator implements BoidsSimulator {
     private BoidsModel model;

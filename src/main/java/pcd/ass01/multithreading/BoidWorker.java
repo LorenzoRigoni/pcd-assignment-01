@@ -2,10 +2,9 @@ package pcd.ass01.multithreading;
 
 import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
+import pcd.ass01.common.SimulationState;
 
 import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
 
 /**
  * This class represents the thread that manage a subset of boids.

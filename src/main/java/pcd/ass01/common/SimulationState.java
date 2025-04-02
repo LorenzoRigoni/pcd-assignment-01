@@ -1,4 +1,4 @@
-package pcd.ass01.multithreading;
+package pcd.ass01.common;
 
 /**
  * This class manage the state of the simulation: running or suspended.
