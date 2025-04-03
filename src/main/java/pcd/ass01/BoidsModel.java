@@ -2,6 +2,7 @@ package pcd.ass01;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BoidsModel {
     
@@ -14,6 +15,7 @@ public class BoidsModel {
     private final double maxSpeed;
     private final double perceptionRadius;
     private final double avoidRadius;
+    private final ReentrantLock lock;
 
     public BoidsModel(int nboids,  
     						double initialSeparationWeight, 
@@ -32,12 +34,13 @@ public class BoidsModel {
         this.maxSpeed = maxSpeed;
         this.perceptionRadius = perceptionRadius;
         this.avoidRadius = avoidRadius;
+        this.lock = new ReentrantLock();
         
     	boids = new ArrayList<>();
         for (int i = 0; i < nboids; i++) {
         	P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
         	V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
-        	boids.add(new Boid(pos, vel));
+        	boids.add(new Boid(pos, vel, this.lock));
         }
 
     }
