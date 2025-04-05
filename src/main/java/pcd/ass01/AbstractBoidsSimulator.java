@@ -12,7 +12,7 @@ public abstract class AbstractBoidsSimulator implements BoidsSimulator {
 
     public AbstractBoidsSimulator() {
         this.view = Optional.empty();
-        this.simulationState = new SimulationState(true);
+        this.simulationState = new SimulationState();
     }
 
     @Override
@@ -21,8 +21,13 @@ public abstract class AbstractBoidsSimulator implements BoidsSimulator {
     }
 
     @Override
-    public boolean isRunning() {
-        return this.simulationState.isRunning();
+    public boolean isPaused() {
+        return this.simulationState.isPaused();
+    }
+
+    @Override
+    public boolean isStopped() {
+        return this.simulationState.isStopped();
     }
 
     @Override
@@ -37,6 +42,16 @@ public abstract class AbstractBoidsSimulator implements BoidsSimulator {
 
     @Override
     public abstract void runSimulation();
+
+    @Override
+    public void startSimulation() {
+        this.simulationState.startSimulation();
+    }
+
+    @Override
+    public void stopSimulation() {
+        this.simulationState.stopSimulation();
+    }
 
     protected void updateView(long t0) {
         if (view.isPresent()) {

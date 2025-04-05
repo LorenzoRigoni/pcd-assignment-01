@@ -10,11 +10,18 @@ public interface BoidsSimulator {
     void attachView(BoidsView view);
 
     /**
-     * Checks if the simulator is running.
+     * Checks if the simulator is paused.
      *
-     * @return true if it is running, false otherwise
+     * @return true if it is paused, false otherwise
      */
-    boolean isRunning();
+    boolean isPaused();
+
+    /**
+     * Checks if the simulator is stopped.
+     *
+     * @return true if it is stopped, false otherwise
+     */
+    boolean isStopped();
 
     /**
      * Resumes the simulation.
@@ -30,4 +37,14 @@ public interface BoidsSimulator {
      * Runs the simulation.
      */
     void runSimulation();
+
+    /**
+     * Starts the simulation.
+     */
+    void startSimulation();
+
+    /**
+     * Stops the simulation.
+     */
+    void stopSimulation();
 }

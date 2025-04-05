@@ -5,16 +5,17 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 public class BoidsView implements ChangeListener {
 
 	private final JFrame frame;
-	private final BoidsPanel boidsPanel;
+	private BoidsPanel boidsPanel;
 	private final JSlider cohesionSlider, separationSlider, alignmentSlider;
+	private final JButton suspendResumeButton;
 	private final BoidsModel model;
 	private final BoidsSimulator simulator;
-	private final JButton suspendResumeButton, stopButton;
 	private final int width, height;
 	
 	public BoidsView(BoidsModel model, BoidsSimulator simulator, int width, int height) {
@@ -34,43 +35,79 @@ public class BoidsView implements ChangeListener {
         boidsPanel = new BoidsPanel(this, model);
 		cp.add(BorderLayout.CENTER, boidsPanel);
 
+		JPanel statePanel = this.getStatePanel(cp);
+
+		this.suspendResumeButton = new JButton("Suspend");
+		suspendResumeButton.setEnabled(false);
+		suspendResumeButton.addActionListener(e -> {
+			if(this.simulator.isPaused()) {
+				this.simulator.resumeSimulation();
+				suspendResumeButton.setText("Suspend");
+			} else {
+				this.simulator.suspendSimulation();
+				suspendResumeButton.setText("Resume");
+			}
+		});
+
         JPanel slidersPanel = new JPanel();
         
         cohesionSlider = makeSlider();
         separationSlider = makeSlider();
         alignmentSlider = makeSlider();
-		this.suspendResumeButton = new JButton("Suspend");
-		this.stopButton = new JButton("Stop");
-
-		this.suspendResumeButton.addActionListener(e -> {
-			if(this.simulator.isRunning()) {
-				this.simulator.suspendSimulation();
-				this.suspendResumeButton.setText("Resume");
-			} else {
-				this.simulator.resumeSimulation();
-				this.suspendResumeButton.setText("Suspend");
-			}
-		});
-
-		this.stopButton.addActionListener(e -> {
-			frame.dispose();
-			System.exit(0);
-		});
 
 		slidersPanel.add(this.suspendResumeButton);
-		slidersPanel.add(this.stopButton);
         slidersPanel.add(new JLabel("Separation"));
         slidersPanel.add(separationSlider);
         slidersPanel.add(new JLabel("Alignment"));
         slidersPanel.add(alignmentSlider);
         slidersPanel.add(new JLabel("Cohesion"));
         slidersPanel.add(cohesionSlider);
-		        
+
+		cp.add(BorderLayout.NORTH, statePanel);
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
 		frame.setContentPane(cp);	
 		
         frame.setVisible(true);
+	}
+
+	private JPanel getStatePanel(JPanel cp) {
+		final JPanel statePanel = new JPanel();
+		statePanel.setLayout(new FlowLayout());
+
+		final JLabel numOfBoidsLabel = new JLabel("Enter the number of boids (it must be a positive integer):");
+		final JTextField numOfBoidsField = new JTextField(15);
+
+		final JButton startStopButton = new JButton("Start");
+		startStopButton.addActionListener(e -> {
+			if(this.isInputPositiveInteger(numOfBoidsField.getText()) && this.simulator.isStopped()) {
+				this.model.createBoids(Integer.parseInt(numOfBoidsField.getText()));
+				this.suspendResumeButton.setEnabled(true);
+				this.simulator.startSimulation();
+				this.boidsPanel = new BoidsPanel(this, this.model);
+				cp.add(BorderLayout.CENTER, boidsPanel);
+			} else if(!this.simulator.isStopped()){
+				this.simulator.stopSimulation();
+				this.suspendResumeButton.setEnabled(false);
+			} else {
+				JOptionPane.showMessageDialog(frame, "The input entered is not a positive integer");
+			}
+
+			if (this.simulator.isStopped()) {
+				startStopButton.setText("Start");
+				numOfBoidsLabel.setVisible(true);
+				numOfBoidsField.setVisible(true);
+			} else {
+				startStopButton.setText("Stop");
+				numOfBoidsLabel.setVisible(false);
+				numOfBoidsField.setVisible(false);
+			}
+		});
+
+		statePanel.add(BorderLayout.WEST, numOfBoidsLabel);
+		statePanel.add(BorderLayout.WEST, numOfBoidsField);
+		statePanel.add(BorderLayout.CENTER, startStopButton);
+		return statePanel;
 	}
 
 	private JSlider makeSlider() {
@@ -114,5 +151,13 @@ public class BoidsView implements ChangeListener {
 
 	public int getHeight() {
 		return height;
+	}
+
+	private boolean isInputPositiveInteger(String input) {
+		try  {
+			return Integer.parseInt(input) > 0;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }

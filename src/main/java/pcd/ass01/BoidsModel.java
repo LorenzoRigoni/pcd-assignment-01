@@ -17,8 +17,7 @@ public class BoidsModel {
     private final double avoidRadius;
     private final ReentrantLock lock;
 
-    public BoidsModel(int nboids,  
-    						double initialSeparationWeight, 
+    public BoidsModel(double initialSeparationWeight,
     						double initialAlignmentWeight, 
     						double initialCohesionWeight,
     						double width, 
@@ -35,14 +34,16 @@ public class BoidsModel {
         this.perceptionRadius = perceptionRadius;
         this.avoidRadius = avoidRadius;
         this.lock = new ReentrantLock();
-        
-    	boids = new ArrayList<>();
-        for (int i = 0; i < nboids; i++) {
-        	P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
-        	V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
-        	boids.add(new Boid(pos, vel, this.lock));
-        }
+        boids = new ArrayList<>();
+    }
 
+    public void createBoids(int numOfBoids) {
+        this.boids.clear();
+        for (int i = 0; i < numOfBoids; i++) {
+            P2d pos = new P2d(-width/2 + Math.random() * width, -height/2 + Math.random() * height);
+            V2d vel = new V2d(Math.random() * maxSpeed/2 - maxSpeed/4, Math.random() * maxSpeed/2 - maxSpeed/4);
+            boids.add(new Boid(pos, vel, this.lock));
+        }
     }
     
     public List<Boid> getBoids(){

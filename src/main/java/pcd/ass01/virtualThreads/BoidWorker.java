@@ -1,25 +1,21 @@
-package pcd.ass01.multithreading;
+package pcd.ass01.virtualThreads;
 
 import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
 import pcd.ass01.common.SimulationState;
+import pcd.ass01.virtualThreads.UpdateBarrier;
+import pcd.ass01.virtualThreads.WorkersCoordinator;
 
-import java.util.List;
-
-/**
- * This class represents the thread that manage a subset of boids.
- * It performs the update of velocities and positions of the boids.
- */
 public class BoidWorker extends Thread {
-    private final List<Boid> boids;
+    private final Boid boid;
     private final BoidsModel model;
     private final UpdateBarrier barrier;
     private final SimulationState simulationState;
     private final WorkersCoordinator workersCoordinator;
     private boolean isRunning;
 
-    public BoidWorker(List<Boid> boids, BoidsModel model, UpdateBarrier barrier, SimulationState simulationState, WorkersCoordinator workersCoordinator) {
-        this.boids = boids;
+    public BoidWorker(Boid boid, BoidsModel model, UpdateBarrier barrier, SimulationState simulationState, WorkersCoordinator workersCoordinator) {
+        this.boid = boid;
         this.model = model;
         this.barrier = barrier;
         this.simulationState = simulationState;
@@ -32,15 +28,11 @@ public class BoidWorker extends Thread {
         while(this.isRunning) {
             this.simulationState.waitForSimulation();
 
-            for (Boid boid : this.boids) {
-                boid.updateVelocity(model);
-            }
+            this.boid.updateVelocity(this.model);
 
             this.barrier.waitBarrier(); //Wait all the boids to update their velocities
 
-            for (Boid boid : this.boids) {
-                boid.updatePos(model);
-            }
+            this.boid.updatePos(this.model);
 
             this.workersCoordinator.workerDone();
         }
@@ -48,7 +40,6 @@ public class BoidWorker extends Thread {
 
     @Override
     public void interrupt() {
-        super.interrupt();
         this.isRunning = false;
     }
 }
