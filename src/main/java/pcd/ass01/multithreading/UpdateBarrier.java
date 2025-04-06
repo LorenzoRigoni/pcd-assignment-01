@@ -1,7 +1,7 @@
 package pcd.ass01.multithreading;
 
 /**
- * This class manages the barrier for the threads after the update of velocities.
+ * This class manages the barrier for the workers after the update of velocities.
  */
 public class UpdateBarrier {
     private final int numWorkers;

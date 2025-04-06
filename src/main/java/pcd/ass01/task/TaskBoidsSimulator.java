@@ -6,21 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
+import static pcd.ass01.utilities.Costants.NUM_THREADS;
+
+/**
+ * This class is the task-based version of the simulator.
+ */
 public class TaskBoidsSimulator extends AbstractBoidsSimulator {
     private final BoidsModel model;
     private ExecutorService executor;
     private UpdateLatch velocityLatch;
     private UpdateLatch positionLatch;
     private List<List<Boid>> boidLists;
-    private final int numThreads = Runtime.getRuntime().availableProcessors() + 1;
     private boolean isRunning;
 
     public TaskBoidsSimulator(BoidsModel model) {
         super();
         this.model = model;
-        this.executor = Executors.newFixedThreadPool(numThreads);
+        this.executor = Executors.newFixedThreadPool(NUM_THREADS);
         this.boidLists = new ArrayList<>();
         this.isRunning = true;
     }
@@ -35,9 +38,6 @@ public class TaskBoidsSimulator extends AbstractBoidsSimulator {
 
             var t0 = System.currentTimeMillis();
 
-            if(!this.isRunning)
-                break;
-
             for (List<Boid> boids : this.boidLists) {
                 this.executor.execute(new BoidTask(boids, this.model, this.simulationState, this.velocityLatch, this.positionLatch));
             }
@@ -50,7 +50,7 @@ public class TaskBoidsSimulator extends AbstractBoidsSimulator {
     public void startSimulation() {
         super.startSimulation();
         this.isRunning = true;
-        this.executor = Executors.newFixedThreadPool(this.numThreads);
+        this.executor = Executors.newFixedThreadPool(NUM_THREADS);
         new Thread(this::runSimulation).start();
     }
 
@@ -64,13 +64,13 @@ public class TaskBoidsSimulator extends AbstractBoidsSimulator {
 
     private void createTasks() {
         final List<Boid> boids = this.model.getBoids();
-        final int boidsPerWorker = boids.size() / numThreads;
+        final int boidsPerWorker = boids.size() / NUM_THREADS;
 
         int start;
         int end;
-        for (int i = 0; i < numThreads; i++) {
+        for (int i = 0; i < NUM_THREADS; i++) {
             start = i * boidsPerWorker;
-            end = (i == numThreads - 1) ? boids.size() : start + boidsPerWorker;
+            end = (i == NUM_THREADS - 1) ? boids.size() : start + boidsPerWorker;
             this.boidLists.add(boids.subList(start, end));
         }
 

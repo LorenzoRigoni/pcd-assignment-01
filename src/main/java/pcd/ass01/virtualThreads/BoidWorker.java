@@ -3,9 +3,10 @@ package pcd.ass01.virtualThreads;
 import pcd.ass01.Boid;
 import pcd.ass01.BoidsModel;
 import pcd.ass01.common.SimulationState;
-import pcd.ass01.virtualThreads.UpdateBarrier;
-import pcd.ass01.virtualThreads.WorkersCoordinator;
 
+/**
+ * This class manages the updates on a single boid.
+ */
 public class BoidWorker extends Thread {
     private final Boid boid;
     private final BoidsModel model;
@@ -40,6 +41,7 @@ public class BoidWorker extends Thread {
 
     @Override
     public void interrupt() {
+        super.interrupt();
         this.isRunning = false;
     }
 }

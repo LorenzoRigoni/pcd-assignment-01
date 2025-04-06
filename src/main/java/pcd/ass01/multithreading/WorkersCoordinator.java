@@ -1,7 +1,7 @@
 package pcd.ass01.multithreading;
 
 /**
- * This class coordinates the workers (threads).
+ * This class coordinates the workers (threads) after the updating of the positions of the boids.
  */
 public class WorkersCoordinator {
     private final int numWorkers;
@@ -13,8 +13,8 @@ public class WorkersCoordinator {
     }
 
     /**
-     * When a worker finish the job (update velocities and positions of the boids),
-     * it checks if all the workers have done. If it's true, allows to repaint.
+     * When a worker finishes the job (update velocities and positions of the boids),
+     * it checks if all the workers have done. If it's true, allows to repaint, otherwise wait.
      * Finally, it stops threads until every boid has been repainted.
      */
     public synchronized void workerDone() {
@@ -30,7 +30,7 @@ public class WorkersCoordinator {
     }
 
     /**
-     * Check if all the workers have done their work (update velocities and positions of the boids).
+     * Checks if all the workers have done their work (update velocities and positions of the boids).
      */
     public synchronized void waitWorkers() {
         try {

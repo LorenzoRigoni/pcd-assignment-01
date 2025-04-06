@@ -6,7 +6,7 @@ import pcd.ass01.common.SimulationState;
 import java.util.List;
 
 /**
- * This class represents the task that manages a subset of boids.
+ * This class represents the task that the executor has to execute.
  */
 public class BoidTask implements Runnable {
     private final List<Boid> boids;

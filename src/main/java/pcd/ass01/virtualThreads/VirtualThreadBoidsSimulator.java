@@ -6,11 +6,14 @@ import pcd.ass01.BoidsModel;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is the virtual-threaded version of the simulator.
+ */
 public class VirtualThreadBoidsSimulator extends AbstractBoidsSimulator {
-    private WorkersCoordinator coordinator;
-    private UpdateBarrier barrier;
     private final BoidsModel model;
     private final List<Thread> workers;
+    private WorkersCoordinator coordinator;
+    private UpdateBarrier barrier;
 
     public VirtualThreadBoidsSimulator(BoidsModel model) {
         super();
@@ -40,8 +43,8 @@ public class VirtualThreadBoidsSimulator extends AbstractBoidsSimulator {
     }
 
     private void createVirtualThreads() {
-        this.coordinator = new WorkersCoordinator(model.getBoids().size());
-        this.barrier = new UpdateBarrier(model.getBoids().size());
+        this.coordinator = new WorkersCoordinator(this.model.getBoids().size());
+        this.barrier = new UpdateBarrier(this.model.getBoids().size());
         this.model.getBoids().forEach(b ->
             this.workers.add(Thread.ofVirtual().start(new BoidWorker(b, this.model, this.barrier, this.simulationState, this.coordinator)))
         );

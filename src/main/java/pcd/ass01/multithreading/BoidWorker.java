@@ -7,7 +7,7 @@ import pcd.ass01.common.SimulationState;
 import java.util.List;
 
 /**
- * This class represents the thread that manage a subset of boids.
+ * This class represents the worker that manage a subset of boids.
  * It performs the update of velocities and positions of the boids.
  */
 public class BoidWorker extends Thread {

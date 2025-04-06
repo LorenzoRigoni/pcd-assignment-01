@@ -4,6 +4,9 @@ import pcd.ass01.common.SimulationState;
 
 import java.util.Optional;
 
+/**
+ * This abstract class implements the common operations of the simulators.
+ */
 public abstract class AbstractBoidsSimulator implements BoidsSimulator {
     protected final SimulationState simulationState;
     protected Optional<BoidsView> view;

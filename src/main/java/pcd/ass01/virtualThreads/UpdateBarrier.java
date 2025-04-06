@@ -4,35 +4,37 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * This class manages the barrier for the threads.
+ * This class manages the barrier for the workers.
  */
 public class UpdateBarrier {
+    private final ReentrantLock lock;
+    private final Condition condition;
     private final int numWorkers;
     private int countWorkersAtBarrier;
-    private final ReentrantLock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
 
     public UpdateBarrier(int numWorkers) {
         this.numWorkers = numWorkers;
         this.countWorkersAtBarrier = 0;
+        this.lock = new ReentrantLock();
+        this.condition = this.lock.newCondition();
     }
 
     /**
-     * Stops the threads until all the boids have updated their velocities.
+     * Stops the workers until all the boids have updated their velocities.
      */
     public void waitBarrier() {
-        lock.lock();
+        this.lock.lock();
         try {
             this.countWorkersAtBarrier++;
             if (this.countWorkersAtBarrier < this.numWorkers)
-                condition.await();
+                this.condition.await();
             else {
                 this.countWorkersAtBarrier = 0;
-                condition.signalAll();
+                this.condition.signalAll();
             }
         } catch (InterruptedException e) {}
         finally {
-            lock.unlock();
+            this.lock.unlock();
         }
     }
 }
