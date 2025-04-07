@@ -19,4 +19,5 @@ public class Costants {
     public final static int SCREEN_HEIGHT = 800;
 
     public final static int NUM_THREADS = Runtime.getRuntime().availableProcessors() + 1;
+    public final static int TASK_POOL_SIZE = 100;
 }
