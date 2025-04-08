@@ -56,12 +56,13 @@ public abstract class AbstractBoidsSimulator implements BoidsSimulator {
         this.simulationState.stopSimulation();
     }
 
-    protected void updateView(long t0) {
+    protected void updateView(long t0, long t0Nano) {
         if (view.isPresent()) {
             view.get().update(framerate);
             var t1 = System.currentTimeMillis();
+            var t1Nano = System.nanoTime();
             var dtElapsed = t1 - t0;
-            System.out.println(dtElapsed);
+            //System.out.println(t1Nano - t0Nano);
             var framratePeriod = 1000/FRAMERATE;
 
             if (dtElapsed < framratePeriod) {

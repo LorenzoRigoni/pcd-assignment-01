@@ -14,12 +14,15 @@ public class BoidsSimulation {
     					ENVIRONMENT_WIDTH, ENVIRONMENT_HEIGHT,
     					MAX_SPEED,
     					PERCEPTION_RADIUS,
-    					AVOID_RADIUS); 
-    	var sim = new MultithreadingBoidsSimulator(model);
-		//var sim = new TaskBoidsSimulator(model);
-		//var sim = new VirtualThreadBoidsSimulator(model);
+    					AVOID_RADIUS);
+		final BoidsSimulator sim;
+    	sim = new MultithreadingBoidsSimulator(model);
+		//sim = new TaskBoidsSimulator(model);
+		//sim = new VirtualThreadBoidsSimulator(model);
     	var view = new BoidsView(model, sim, SCREEN_WIDTH, SCREEN_HEIGHT);
     	sim.attachView(view);
-    	sim.runSimulation();
+		if(sim instanceof MultithreadingBoidsSimulator || sim instanceof VirtualThreadBoidsSimulator) {
+			sim.runSimulation();
+		}
     }
 }

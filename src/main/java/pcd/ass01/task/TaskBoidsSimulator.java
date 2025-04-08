@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static pcd.ass01.utilities.Costants.TASK_POOL_SIZE;
+import static pcd.ass01.utilities.Costants.NUM_THREADS;
 
 /**
  * This class is the task-based version of the simulator.
@@ -24,7 +24,7 @@ public class TaskBoidsSimulator extends AbstractBoidsSimulator {
     public TaskBoidsSimulator(BoidsModel model) {
         super();
         this.model = model;
-        this.executor = Executors.newCachedThreadPool();
+        this.executor = Executors.newFixedThreadPool(NUM_THREADS);
         this.boidsLists = new ArrayList<>();
         this.futures = new ArrayList<>();
         this.isRunning = true;
@@ -39,20 +39,23 @@ public class TaskBoidsSimulator extends AbstractBoidsSimulator {
                 this.createBoidsLists();
 
             var t0 = System.currentTimeMillis();
+            var t0Nano = System.nanoTime();
 
-            this.boidsLists.forEach(b ->
-                this.futures.add(this.executor.submit(new VelocityBoidTask(b, this.model, this.simulationState)))
-            );
-
-            this.waitFuturesAndClear();
-
-            this.boidsLists.forEach(b ->
-                this.futures.add(this.executor.submit(new PositionBoidTask(b, this.model, this.simulationState)))
-            );
+            this.boidsLists.forEach(b -> {
+                if (!this.isRunning) return;
+                this.futures.add(this.executor.submit(new VelocityBoidTask(b, this.model, this.simulationState)));
+            });
 
             this.waitFuturesAndClear();
 
-            this.updateView(t0);
+            this.boidsLists.forEach(b -> {
+                if (!this.isRunning) return;
+                this.futures.add(this.executor.submit(new PositionBoidTask(b, this.model, this.simulationState)));
+            });
+
+            this.waitFuturesAndClear();
+
+            this.updateView(t0, t0Nano);
         }
     }
 
@@ -70,18 +73,18 @@ public class TaskBoidsSimulator extends AbstractBoidsSimulator {
         this.isRunning = false;
         this.executor.shutdown();
         this.boidsLists.clear();
+        this.futures.clear();
     }
 
     private void createBoidsLists() {
         final List<Boid> boids = this.model.getBoids();
-        final int boidsPerTask = boids.size() / TASK_POOL_SIZE;
-        final int numTasks = Math.max(1, boidsPerTask);
+        final int boidsPerThread = boids.size() / NUM_THREADS;
 
         int start;
         int end;
-        for (int i = 0; i < numTasks; i++) {
-            start = i * boidsPerTask;
-            end = (i == numTasks - 1) ? boids.size() : start + boidsPerTask;
+        for (int i = 0; i < NUM_THREADS; i++) {
+            start = i * boidsPerThread;
+            end = (i == NUM_THREADS - 1) ? boids.size() : start + boidsPerThread;
             this.boidsLists.add(boids.subList(start, end));
         }
     }

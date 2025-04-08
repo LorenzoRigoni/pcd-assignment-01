@@ -30,10 +30,11 @@ public class VirtualThreadBoidsSimulator extends AbstractBoidsSimulator {
                 this.createVirtualThreads();
 
             var t0 = System.currentTimeMillis();
+            var t0Nano = System.nanoTime();
 
             this.coordinator.waitWorkers();
 
-            this.updateView(t0);
+            this.updateView(t0, t0Nano);
 
             if(this.simulationState.isStopped())
                 this.interruptVirtualThreads();

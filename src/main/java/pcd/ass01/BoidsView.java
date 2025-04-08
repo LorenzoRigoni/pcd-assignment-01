@@ -5,7 +5,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 public class BoidsView implements ChangeListener {
@@ -35,7 +34,7 @@ public class BoidsView implements ChangeListener {
         boidsPanel = new BoidsPanel(this, model);
 		cp.add(BorderLayout.CENTER, boidsPanel);
 
-		JPanel statePanel = this.getStatePanel(cp);
+		JPanel initialPanel = this.initialAndStopPanel(cp);
 
 		this.suspendResumeButton = new JButton("Suspend");
 		suspendResumeButton.setEnabled(false);
@@ -63,7 +62,7 @@ public class BoidsView implements ChangeListener {
         slidersPanel.add(new JLabel("Cohesion"));
         slidersPanel.add(cohesionSlider);
 
-		cp.add(BorderLayout.NORTH, statePanel);
+		cp.add(BorderLayout.NORTH, initialPanel);
 		cp.add(BorderLayout.SOUTH, slidersPanel);
 
 		frame.setContentPane(cp);	
@@ -71,7 +70,7 @@ public class BoidsView implements ChangeListener {
         frame.setVisible(true);
 	}
 
-	private JPanel getStatePanel(JPanel cp) {
+	private JPanel initialAndStopPanel(JPanel cp) {
 		final JPanel statePanel = new JPanel();
 		statePanel.setLayout(new FlowLayout());
 
@@ -86,9 +85,11 @@ public class BoidsView implements ChangeListener {
 				this.simulator.startSimulation();
 				this.boidsPanel = new BoidsPanel(this, this.model);
 				cp.add(BorderLayout.CENTER, boidsPanel);
-			} else if(!this.simulator.isStopped()){
+			} else if(!this.simulator.isStopped() && !this.simulator.isPaused()){
 				this.simulator.stopSimulation();
 				this.suspendResumeButton.setEnabled(false);
+			} else if(this.simulator.isPaused()) {
+				JOptionPane.showMessageDialog(frame, "You can not stop the simulation while the simulation is suspended");
 			} else {
 				JOptionPane.showMessageDialog(frame, "The input entered is not a positive integer");
 			}
