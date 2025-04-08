@@ -25,7 +25,7 @@ public class PositionBoidTask implements Callable<Void> {
     public Void call() {
         this.simulationState.waitForSimulation();
 
-        for (Boid boid : this.boids)
+        for(Boid boid : this.boids)
             boid.updatePos(this.model);
 
         return null;

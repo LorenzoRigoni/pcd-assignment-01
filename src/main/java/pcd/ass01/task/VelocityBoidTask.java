@@ -26,7 +26,7 @@ public class VelocityBoidTask implements Callable<Void> {
         this.simulationState.waitForSimulation();
         
         for(Boid boid : this.boids)
-            boid.updateVelocity(model);
+            boid.updateVelocity(this.model);
 
         return null;
     }
